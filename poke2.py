@@ -21,7 +21,7 @@ class Pokemon():
 pikachu = Pokemon()
 pikachu.pokeHealth = 10
 pikachu.pokeType = 1
-pikachu.pokeAttack1 = 2
+pikachu.pokeAttack1 = 3
 pikachu.pokeAttack2 = 1 # 3 on water opponents, 0 on other opponents#'''1 on every opponent'''
 pikachu.pokeEffect = "None" #'''extra 2 damage next turn''' #'''1 reverse damage if attacked next turn'''
 pikachu.EffectNum = 0
@@ -41,7 +41,7 @@ squirtle.pokeName = 'Squirtle'
 squirtle.moves = ['Water Splash','Finishing Blow','Shell Shock','Rest']
 
 charmander = Pokemon()
-charmander.pokeHealth = 10
+charmander.pokeHealth = 15
 charmander.pokeType = 3
 charmander.pokeAttack1 = 2 #2 damage to grass types, ignores all shields, otherwise does damage to self
 charmander.pokeAttack2 = 2 
@@ -51,8 +51,8 @@ charmander.pokeUsed = 0
 charmander.pokeName = 'Charmander'
 charmander.moves = ['Flamethrower','Scratch','BlazeShield','Dragon Rage']
 
-player1Pokemon = pikachu
-player2Pokemon = squirtle
+player1Pokemon = squirtle
+player2Pokemon = charmander
 playerTurn = 0
 
 
@@ -397,6 +397,14 @@ while True:
                             else:
                                 player1Pokemon.pokeHealth = player1Pokemon.pokeHealth + player1Pokemon.EffectNum - 1
                                 MoveMade = 1
+                if player2Pokemon.pokeType == 3: #check if fire pokemon
+                    if player1Pokemon.pokeType == 4:
+                        player1Pokemon.pokeHealth = player1Pokemon.pokeHealth - player2Pokemon.pokeAttack1
+                    else:
+                        player2Pokemon.pokeHealth-=1
+                    MoveMade = 1 
+                
+                
                 else:
                     MoveMade = 1
                 if player1Pokemon.pokeEffect == "Spike" :
@@ -442,6 +450,14 @@ while True:
                                 else:
                                     player1Pokemon.pokeHealth = player1Pokemon.pokeHealth + player1Pokemon.EffectNum - player2Pokemon.pokeAttack2
                                     MoveMade = 1
+                elif player2Pokemon.pokeType == 3:
+                    if player1Pokemon.pokeEffect == "Protect": #checks if opponent is protected
+                        if player1Pokemon.EffectNum > player2Pokemon.pokeAttack2 + player2Pokemon.EffectNum: 
+                            MoveMade =1
+                        else:
+                            player1Pokemon.pokeHealth == player1Pokemon.pokeHealth + player1Pokemon.EffectNum - player2Pokemon.pokeAttack2 - player2Pokemon.EffectNum
+                            MoveMade = 1
+
                     else:
                         MoveMade = 1
                 if player1Pokemon.pokeEffect == "Spike" :
@@ -457,6 +473,10 @@ while True:
                 if player2Pokemon.pokeType == 2:
                     player2Pokemon.pokeEffect = "Protect" 
                     player2Pokemon.EffectNum = 2
+                if player2Pokemon.pokeType == 3:
+                    player2Pokemon.pokeEffect = "Spike" 
+                    player2Pokemon.EffectNum = 2
+                MoveMade = 1      
                 MoveMade = 1 
 
             #move4 for player 1
@@ -468,6 +488,10 @@ while True:
                     player2Pokemon.pokeEffect = "Heal"
                     player2Pokemon.EffectNum = 2
                     player2Pokemon.pokeHealth+=player2Pokemon.EffectNum
+                if player2Pokemon.pokeType == 3:
+                    player1Pokemon.pokeHealth-=4
+                    player2Pokemon.pokeEffect = "Attack"
+                    player2Pokemon.pokeHealth-=3
                 MoveMade = 1 
 
             elif move == '5':
@@ -482,6 +506,12 @@ while True:
                     print ("Finishing Blow: 3 damage if opponents health is 5 or less")
                     print ("ShellShock: 2 less damage next turn")
                     print ("Rest: Heal 2 HP")
+                    player2Pokemon.pokeUsed = 0
+                if player2Pokemon.pokeType == 3:
+                    print ("Flamethrower: 2 damage on grass opponents, ignoring all their effects, otherwise 1 damage to self")
+                    print ("Scratch: 2 damage to opponent")
+                    print ("BlazeShield: 2 damage is reversed if youre attacked next turn")
+                    print ("Dragon Rage: Do 4 damage to your opponent, but also take 3 yourself")
                     player2Pokemon.pokeUsed = 0
             else:
                 print ("Choose a valid move")
@@ -504,6 +534,11 @@ while True:
                     print("You hide in your shell!")
                 if player2Pokemon.pokeEffect == "Heal":
                     print("You rest and heal 2 hp")
+            if player2Pokemon.pokeType == 3:
+                if player1Pokemon.pokeEffect == "Spike":
+                    print("You set yourself on fire!")
+                if player1Pokemon.pokeEffect == "Attack":
+                    print("You go in a fit of rage")        
             time.sleep(0.6)
             os.system('clear')
             time.sleep(0.3)
